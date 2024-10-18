@@ -1,0 +1,2 @@
+* * * * * cd /Users/kattan/Desktop/cfa/Django/TME_webAPI_DBO/mySearchEngine/ && python manage.py update_sales && echo "toto" > ~/fichiertest
+* * * * * cd /Users/kattan/Desktop/cfa/Django/TME_webAPI_DBO/mySearchEngine/ && /Users/kattan/Desktop/cfa/Django/TME_webAPI_DBO/mySearchEngine/ python manage.py update_sales && echo "toto" >> ~/fichiertest11
