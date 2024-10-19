@@ -6,6 +6,10 @@ from myRevendeurBackOffice.models import InfoProduct
 from myRevendeurBackOffice.serializers import InfoProductSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.http import Http404
+from django.http import JsonResponse
+from django.views import View
+import json
+import os
 # Create your views here.
 class InfoProductList(APIView):
     #######################
@@ -109,3 +113,10 @@ class decrementStock(APIView):
         product = self.get_object(tig_id=tig_id , lessstock= lessstock)
         serializer = InfoProductSerializer(product)
         return Response(serializer.data)
+    
+class ReadJsonView(View):
+    def get(self, request):
+        file_path = os.path.join(os.path.dirname(__file__), '/Users/kattan/Desktop/cfa/Django/TME_webAPI_DBO/large_data_set_150.json')
+        with open(file_path) as json_file:
+            data = json.load(json_file)
+        return JsonResponse(data,safe=False)
