@@ -116,7 +116,7 @@ class decrementStock(APIView):
     
 class ReadJsonView(View):
     def get(self, request):
-        file_path = os.path.join(os.path.dirname(__file__), '/Users/kattan/Desktop/cfa/Django/TME_webAPI_DBO/large_data_set_150.json')
+        file_path = os.path.join(os.path.dirname(__file__), '../../large_data_set_150.json')
         with open(file_path) as json_file:
             data = json.load(json_file)
         return JsonResponse(data,safe=False)
