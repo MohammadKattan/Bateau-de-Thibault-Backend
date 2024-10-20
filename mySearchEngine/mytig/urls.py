@@ -10,5 +10,5 @@ urlpatterns = [
     path('shipPoint/<int:pk>/', views.RedirectionDetailShipPoint.as_view()),
     path('availableproducts/', views.AvailableList.as_view()),
     path('availableproduct/<int:pk>/', views.AvailableDetail.as_view()),
-    path('poissons/', views.PoissonsList.as_view()),
+    path('poissonss/', views.PoissonsList.as_view()),
 ]

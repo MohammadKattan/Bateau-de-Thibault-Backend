@@ -39,6 +39,7 @@ from django.http import JsonResponse
 class PromoList(APIView):
     def get(self, request, format=None):
         res=[]
+        print(ProduitEnPromotion.objects.all())
         for prod in ProduitEnPromotion.objects.all():
             serializer = ProduitEnPromotionSerializer(prod)
             response = requests.get(baseUrl+'product/'+str(serializer.data['tigID'])+'/')

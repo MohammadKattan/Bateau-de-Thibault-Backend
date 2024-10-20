@@ -9,5 +9,7 @@ urlpatterns = [
     path('removesale/<int:tig_id>/', views.removesale.as_view()),
     path('incrementStock/<int:tig_id>/<int:addstock>/', views.incrementStock.as_view()),
     path('decrementStock/<int:tig_id>/<int:lessstock>/', views.decrementStock.as_view()),
+    path('updatePrice/<int:tig_id>/<int:newPrice>/', views.updatePrice.as_view()),
     path('stats/', views.ReadJsonView.as_view()),
+    path('poissons/', views.PoissonsList.as_view()),
 ]
