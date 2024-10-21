@@ -134,3 +134,50 @@ class PoissonsList(APIView):
             jsondata = response.json()
             print(jsondata)
         return JsonResponse(res, safe=False)
+    
+from django.views import View
+from django.http import JsonResponse
+import json
+import os
+from datetime import datetime
+
+from django.views import View
+from django.http import JsonResponse
+import json
+import os
+from datetime import datetime
+
+class newOperation(APIView):
+    def get(self, request, category, type, stock, priceOperation):
+        is_achat = type.lower() == 'true'
+        category_mapping = {
+            0: "Poisson",
+            1: "Coquillage",
+            2: "Crustacé"
+        }
+        categoryName = category_mapping.get(int(category), "Inconnu")
+        print("test test from views")
+        file_path = os.path.join(os.path.dirname(__file__), '../../large_data_set_150.json')
+        try:
+            with open(file_path, 'r') as json_file:
+                data = json.load(json_file)
+        except FileNotFoundError:
+            data = []
+        new_data = {
+            "pid": max([item['pid'] for item in data], default=0) + 1,
+            "category": int(category),
+            "category_name": categoryName,
+            "price": float(priceOperation), 
+            "quantity": int(stock),  
+            "date": datetime.now().strftime("%Y-%m-%d"), 
+            "achat": is_achat,  
+            "type_promotion": None, 
+            "discount": 0.0,
+            "total_invoice": int(stock) * float(priceOperation)
+        }
+        data.append(new_data)
+        with open(file_path, 'w') as json_file:
+            json.dump(data, json_file, indent=4)
+
+        return JsonResponse({"message": "Nouvelle donnée ajoutée avec succès!", "pid": new_data["pid"]}, status=201)
+

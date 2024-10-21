@@ -12,4 +12,5 @@ urlpatterns = [
     path('updatePrice/<int:tig_id>/<int:newPrice>/', views.updatePrice.as_view()),
     path('stats/', views.ReadJsonView.as_view()),
     path('poissons/', views.PoissonsList.as_view()),
+    path('newOperation/<int:category>/<str:type>/<int:stock>/<int:priceOperation>/', views.newOperation.as_view()),
 ]
