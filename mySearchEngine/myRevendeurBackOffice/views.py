@@ -23,7 +23,6 @@ class CreateAdminUserView(View):
         password = request.POST.get('password')
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
-
         admin_user = User.objects.create_user(username=username, email=email, password=password)
         admin_user.first_name = first_name
         admin_user.last_name = last_name
