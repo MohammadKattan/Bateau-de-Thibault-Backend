@@ -1,3 +1,4 @@
+from django import forms
 import requests
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -12,6 +13,59 @@ from django.http import JsonResponse
 from django.views import View
 import json
 import os
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+from django import forms
+
+class CreateAdminUserView(View):
+    def post(self, request):
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        admin_user = User.objects.create_user(username=username, email=email, password=password)
+        admin_user.first_name = first_name
+        admin_user.last_name = last_name
+        admin_user.is_staff = True  
+        admin_user.is_superuser = True  
+        admin_user.save()
+        return JsonResponse({'message': 'Utilisateur admin créé avec succès!'})
+
+class UserRegistrationForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password']
+
+    def save(self, commit=True):
+        user = super(UserRegistrationForm, self).save(commit=False)
+        user.set_password(self.cleaned_data["password"])  
+        if commit:
+            user.save()
+        return user
+    
+
+class RegisterView(View):
+    def get(self, request):
+        form = UserRegistrationForm()
+        return render(request, 'registration/register.html', {'form': form})
+
+    def post(self, request):
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('home')  
+        return render(request, 'registration/register.html', {'form': form})
+
+
+
 # Create your views here.
 class InfoProductList(APIView):
     def get(self, request, format=None):
@@ -119,10 +173,13 @@ class updatePrice(APIView):
     
 class ReadJsonView(View):
     def get(self, request):
-        file_path = os.path.join(os.path.dirname(__file__), '../../large_data_set_150.json')
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        file_path = os.path.join(base_dir, '../large_data_set_150.json')
+        if not os.path.exists(file_path):
+            return JsonResponse({'error': 'File not found'}, status=404)
         with open(file_path) as json_file:
             data = json.load(json_file)
-        return JsonResponse(data,safe=False)
+        return JsonResponse(data, safe=False)
     
 class PoissonsList(APIView):
     def get(self, request, format=None):
@@ -135,12 +192,6 @@ class PoissonsList(APIView):
             print(jsondata)
         return JsonResponse(res, safe=False)
     
-from django.views import View
-from django.http import JsonResponse
-import json
-import os
-from datetime import datetime
-
 from django.views import View
 from django.http import JsonResponse
 import json
@@ -180,4 +231,3 @@ class newOperation(APIView):
             json.dump(data, json_file, indent=4)
 
         return JsonResponse({"message": "Nouvelle donnée ajoutée avec succès!", "pid": new_data["pid"]}, status=201)
-
